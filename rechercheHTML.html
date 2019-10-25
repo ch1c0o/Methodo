@@ -1,0 +1,61 @@
+<!DOCTYPE html> <html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+       <title> Find a City </title>
+</head>
+
+  <style>
+    * {         color : #2d3436;       }
+  </style>
+
+<body>
+  <p>
+    <label for="Ville">Ville :
+    </label>
+
+    <input type="text" name="Ville" id="Ville" placeholder="Ex : Lille" size="30" maxlength="10" />
+    <button type="button" name="search">Submit</button>
+  </p>
+
+  <p id="show"></p>
+</body>
+
+<script> src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"</script>
+
+<script>
+// On lance le la sélection des objets lorsque la page est chargée...
+    $("body").ready(function() {
+      // Lors du click
+      $("button[name=search]").click(function() {
+        afficherTemp();
+      });
+      // Lorsqu'on appuie sur la touche entrée dans l'input
+      $("input").keydown(function(context) {
+        if(context.which == 13) {
+          afficherTemp();
+        }
+      });
+    });
+
+    function afficherTemp() {
+      var worked = false;
+      // On exécute la requête ajax auprès de l'API en donnant la valeur dans le champs text
+      $.getJSON("https://api.openweathermap.org/data/2.5/weather", {
+        "q" : $("#Ville").val(),
+        "units" : "metric",
+        "appid" : "debc3c633abac0af259a118f482e4a90"
+      }, function(oRep) {
+        // Fonction de callback
+        // oRep contient le JSON renvoyé par l'API weather...
+        console.log(oRep);
+        // On affiche maintenant la ville et la température...
+        $("#show").html("<h1>" + oRep.name + "</h1>" +
+        "<p> Température actuelle : " + oRep.main.temp + "°C </p>");
+        worked = true;
+      });
+      if(!worked) {
+        $("#show").html("<p>ERREUR LORS DE LA RECHERCHE </p>");
+      }
+    }
+  </script>
+  </html>
